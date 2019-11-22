@@ -16,14 +16,18 @@ export function getNodeClientOffset(node) {
     y: top
   };
 }
-export function getEventClientTouchOffset(e) {
+export function getEventClientTouchOffset(e, fallbackTargetTouch) {
   if (e.targetTouches.length === 1) {
     return getEventClientOffset(e.targetTouches[0]);
+} else if (e.touches.length === 1) {
+    if (e.touches[0].target === fallbackTargetTouch.target) {
+        return getEventClientOffset(e.touches[0]);
+    }
   }
 }
-export function getEventClientOffset(e) {
+export function getEventClientOffset(e, fallbackTargetTouch) {
   if (isTouchEvent(e)) {
-    return getEventClientTouchOffset(e);
+    return getEventClientTouchOffset(e, fallbackTargetTouch);
   } else {
     return {
       x: e.clientX,

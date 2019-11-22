@@ -36,6 +36,8 @@ function () {
 
     _classCallCheck(this, TouchBackend);
 
+    this.targetTouchFallback = null;
+
     this.getSourceClientOffset = function (sourceId) {
       return getNodeClientOffset(_this.sourceNodes[sourceId]);
     };
@@ -64,10 +66,10 @@ function () {
       // 2. Mess up long tap (which brings up context menu)
       // 3. If there's an anchor link as a child, tap won't be triggered on link
 
-
       var clientOffset = getEventClientOffset(e);
 
       if (clientOffset) {
+        this.targetTouchFallback = e.targetTouches[0];
         _this._mouseClientOffset = clientOffset;
       }
 
@@ -106,7 +108,8 @@ function () {
       var moveStartSourceIds = _this.moveStartSourceIds,
           dragOverTargetIds = _this.dragOverTargetIds;
       var enableHoverOutsideTarget = _this.options.enableHoverOutsideTarget;
-      var clientOffset = getEventClientOffset(e);
+
+      var clientOffset = getEventClientOffset(e, this.targetTouchFallback);
 
       if (!clientOffset) {
         return;
